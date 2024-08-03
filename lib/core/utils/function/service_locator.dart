@@ -13,25 +13,14 @@ final getIT = GetIt.instance;
 class ServiceLocater {
   void setupServiceLocator() {
     getIT.registerSingleton<ApiService>(ApiService(Dio()));
-    getIT.registerSingleton<AuthRepoImpl>(AuthRepoImpl(getIT()));
-    getIT.registerSingleton<HomeRepoImpl>(HomeRepoImpl(
-      getIT.get<ApiService>(),
-    ));
-    // getIT.registerSingleton<HomeRepoImpl>(HomeRepoImpl(getIT()));
-    getIT.registerSingleton<UserRepoImpl>(UserRepoImpl(
-      getIT.get<ApiService>(),
-    ));
-    getIT.registerSingleton<FavoritesRepoImpl>(FavoritesRepoImpl(
-      getIT.get<ApiService>(),
-    ));
-    getIT.registerSingleton<CartRepoImpl>(CartRepoImpl(
-      getIT.get<ApiService>(),
-    ));
-    //getIT.registerLazySingleton<FavoritesRepoImpl>(FavoritesRepoImpl(
-    //   getIT.get<ApiService>(),
-    // ) as FactoryFunc<FavoritesRepoImpl>);
-    // getIT.registerSingletonAsync<CartRepoImpl>(CartRepoImpl(
-    //   getIT.get<ApiService>(),
-    // ) as FactoryFuncAsync<CartRepoImpl>);
+    getIT.registerSingleton<AuthRepoImpl>(AuthRepoImpl(getIT<ApiService>()));
+    getIT.registerSingleton<HomeRepoImpl>(HomeRepoImpl(getIT<ApiService>()));
+    getIT.registerSingleton<UserRepoImpl>(UserRepoImpl(getIT<ApiService>()));
+    getIT.registerSingleton<FavoritesRepoImpl>(
+        FavoritesRepoImpl(getIT<ApiService>()));
+    getIT.registerSingleton<CartRepoImpl>(CartRepoImpl(getIT<ApiService>()));
   }
 }
+//   getIT.registerLazySingleton<ApiService>(() => ApiService(Dio()));
+//  getIT.registerLazySingleton<HomeRepoImpl>(
+//         () => HomeRepoImpl(getIT<ApiService>()));

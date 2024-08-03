@@ -131,16 +131,7 @@ class Product extends StatelessWidget {
                   childAspectRatio: 0.7),
               itemBuilder: (context, index) {
                 //  return _productItem(state.home.data?.products?[index] ?? []
-                return BlocBuilder<LayoutCubit, LayoutStates>(
-                    builder: (context, state) {
-                  if (state is HomeSuccess) {
-                    return ProductItem(products: state.home);
-                  } else {
-                    return const Center(
-                      child: CupertinoActivityIndicator(),
-                    );
-                  }
-                });
+                return ProductItem(index: index);
               });
         }
         if (state is HomeFailure) {
@@ -242,84 +233,104 @@ class Banner extends StatelessWidget {
 }
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({super.key, this.products});
-  final HomeModel? products;
+  const ProductItem({super.key, required this.index});
+
+  final int index;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        color: Colors.grey.withOpacity(0.2),
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Image.network(
-              products?.data?.products?[4].image ?? '',
-              fit: BoxFit.fill,
-              width: double.infinity,
-              height: double.infinity,
+    return BlocBuilder<LayoutCubit, LayoutStates>(
+      builder: (context, state) {
+        if (state is HomeSuccess) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              color: Colors.grey.withOpacity(0.2),
             ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Text(
-            products?.data?.products?[5].name ?? '',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                overflow: TextOverflow.ellipsis),
-          ),
-          const SizedBox(
-            height: 2,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Row(
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Image.network(
+                    state.home.data?.products?[index].image ?? '',
+                    // products?.data?.products?[index].image ?? '',
+                    fit: BoxFit.fill,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  state.home.data?.products?[index].name ?? '',
+                  // products?.data?.products?[5].name ?? '',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      overflow: TextOverflow.ellipsis),
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Row(
                   children: [
-                    FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          "${products?.data?.products?[1].price ?? 0} \$",
-                          style: const TextStyle(fontSize: 13),
-                        )),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        '',
-                        // "${data.oldPrice} \$",
-                        style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12.5,
-                            decoration: TextDecoration.lineThrough),
+                    Expanded(
+                      child: Row(
+                        children: [
+                          FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                '${state.home.data?.products?[index].price?.ceil() ?? 0} \$',
+                                // "${products?.data?.products?[1].price?.ceil() ?? 0} \$",
+                                style: const TextStyle(fontSize: 13),
+                              )),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              '${state.home.data?.products?[index].oldPrice?.ceil() ?? 0} \$',
+                              style: const TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12.5,
+                                  decoration: TextDecoration.lineThrough),
+                            ),
+                          )
+                        ],
                       ),
+                    ),
+                    GestureDetector(
+                      child: Icon(
+                        Icons.favorite,
+                        size: 20,
+                        color: state.home.data!.products![index].inFavorites!
+                            ? Colors.red
+                            : Colors.grey,
+                      ),
+                      onTap: () {
+                        // Add | remove product favorites
+                        BlocProvider.of<LayoutCubit>(context).postfavorites(
+                            productID: state.home.data!.products![index].id
+                                .toString());
+                      },
                     )
                   ],
-                ),
-              ),
-              GestureDetector(
-                child: Icon(
-                  Icons.favorite,
-                  size: 20,
-                  color: products?.data?.products?[8].inFavorites ?? false
-                      ? Colors.red
-                      : Colors.grey,
-                ),
-                onTap: () {
-                  // Add | remove product favorites
-                },
-              )
-            ],
-          )
-        ],
-      ),
+                )
+              ],
+            ),
+          );
+        }
+        if (state is HomeFailure) {
+          return ErrorText(error: state.error);
+        } else {
+          return const Center(
+            child: CupertinoActivityIndicator(),
+          );
+        }
+      },
     );
   }
 }
