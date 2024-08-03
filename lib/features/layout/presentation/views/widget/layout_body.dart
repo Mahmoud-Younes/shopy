@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../../core/utils/function/app_router.dart';
 import '../../manager/layout_cubit.dart';
 
 class LayoutBody extends StatelessWidget {
@@ -21,7 +23,9 @@ class LayoutBody extends StatelessWidget {
               IconButton(
                 iconSize: 24,
                 icon: const Icon(Icons.search_outlined),
-                onPressed: () {},
+                onPressed: () {
+                  GoRouter.of(context).push(AppRouter.ksearch);
+                },
               )
             ],
           ),

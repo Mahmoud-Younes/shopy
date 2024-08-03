@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shopy/features/auth/data/repo/auth_repo_impl.dart';
 import 'package:shopy/features/layout/data/repo/cart/cart_repo_impl.dart';
 import 'package:shopy/features/layout/data/repo/favorites/favorites_repo_impl.dart';
+import 'package:shopy/features/search/data/repo/search_repo_impl.dart';
 import '../../../features/layout/data/repo/home_repo/home_repo_impl.dart';
 import '../../../features/layout/data/repo/user_repo/user_repo_impl.dart';
 import 'api_service.dart';
@@ -19,6 +20,8 @@ class ServiceLocater {
     getIT.registerSingleton<FavoritesRepoImpl>(
         FavoritesRepoImpl(getIT<ApiService>()));
     getIT.registerSingleton<CartRepoImpl>(CartRepoImpl(getIT<ApiService>()));
+    getIT
+        .registerSingleton<SearchRepoImpl>(SearchRepoImpl(getIT<ApiService>()));
   }
 }
 //   getIT.registerLazySingleton<ApiService>(() => ApiService(Dio()));
